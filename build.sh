@@ -17,44 +17,75 @@ function recreateDir() {
     mkdir -p $1
 }
 
+#Path where code and required tools will be checked out
 rootPath=$1
+
+#Path where generated installer will be copied
 distPath=$2
 
-sparrowDir="${rootPaht}/sparrow"
+#Name of the installer that is going to be generated
+distName=$3
+
+createDir "${rootPath}"
+recreateDir "${distPath}"
+
+cd "${rootPath}"
+
+#get or update dep
+go get -u github.com/golang/dep/cmd/dep || exit -1
+
+#get make self
+if [ ! -d makeself ]; then
+    clone https://github.com/megastep/makeself.git
+fi
+
+makeSelfDir="${rootPath}/makeself"
+makeSelfExe="${makeSelfDir}/makeself.sh"
+PATH="${GOPATH}/bin":${PATH}
 vaaliDir="${GOPATH}/src/github/varunamachi/vaali"
 vaaliCmdDir="${vaaliDir}/cmd/vaali"
-makeSelfDir="${rootPath}/makeself"
-PATH="${GOPATH}/bin":${PATH}
+sparrowDir="${rootPaht}/sparrow"
+scriptDir="" #@todo find out how to find out script directory
 
 #get spw server source code
 # getLatestCode "https://github.com/varunamachi/spw"
 
 #get vaali source code - if spw is retrieved the dep should get this
 getLatestCode "https://github.com/varunamachi/vaali" ${vaaliDir} || exit -1
-
-#get sparrow source code
-getLatestCode "https://github.com/varunamachi/sparrow" ${sparrowDir} || exit -1
-
-#get or update dep
-go get -u github.com/golang/dep/cmd/dep || exit -1
-
 #go to vaali dir and install dependencies
 cd ${vaaliDir} || exit -2
+#install dependencies
 dep ensure || exit -2
-
 #build and install vaali executable
 cd ${vaaliCmdDir} || exit -2
 go install || exit -2
 
+#get sparrow source code
+getLatestCode "https://github.com/varunamachi/sparrow" ${sparrowDir} || exit -1
 #build sparrow itself
 cd ${sparrowDir} || exit -3
-
 #install dependencies
 npm install || exit -3
-
 #build the web app
 npm build || exit -3
 
-#make the package...
+#create a temporary directory for building the installer
+tempDir=$(mktemp -d -t "sparrow_") || exit -4
+mkdir ${tempDir}/static
+
+#Copy stuff to dist directory
+cp -R "${sparrowDir}/dist/*" "${tempDir}/static"
+cp -R "${scriptDir}/install.sh" "${tempDir}"
+cp "${GOPATH}/bin/sparrow" ${tempDir}
+
+#Create VERSION file and copy it to temp dir
+${makeSelfExe} ${tempDir} ${distName} "Sparrow!" "install.sh"
+
+function cleanup() {
+    rm -R $tempDir
+}
+
+trap cleanup EXIT
+
 
 
