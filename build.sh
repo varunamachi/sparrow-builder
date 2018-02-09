@@ -44,8 +44,9 @@ makeSelfExe="${makeSelfDir}/makeself.sh"
 PATH="${GOPATH}/bin":${PATH}
 vaaliDir="${GOPATH}/src/github/varunamachi/vaali"
 vaaliCmdDir="${vaaliDir}/cmd/vaali"
-sparrowDir="${rootPaht}/sparrow"
-scriptDir="" #@todo find out how to find out script directory
+sparrowDir="${rootPath}/sparrow"
+scriptName=$(readlink -f $0)
+scriptDir=$(dirname $scriptName)
 
 #get spw server source code
 # getLatestCode "https://github.com/varunamachi/spw"
@@ -73,13 +74,34 @@ npm build || exit -3
 tempDir=$(mktemp -d -t "sparrow_") || exit -4
 mkdir ${tempDir}/static
 
+buildDate=$(date +"%d/%m/%Y %H:%M:%S")
+goVersion=$(go version)
+nodeVersion=$(node --version)
+npmVersion=$(npm --version)
+cd $sparrowDir
+hashSparrow=$(git log --format=%H -n 1)
+cd $vaaliDir
+hashVaali=$(git log --format=%M -n 1)
+cd ${rootPaht}
+
+$version_info="${tempDir}/version.json"
+echo "{" >> $version_info
+echo "    nodeVersion: ${nodeVersion}," >> $version_info
+echo "    npmVersion: ${npmVersion}," >> $version_info
+echo "    goVersion: ${goVersion}," >> $version_info
+echo "    sparrowCommit: ${hashSparrow}," >> $version_info
+echo "    vaaliCommit: ${hashVaali}," >> $version_info
+echo "    builtAt: ${buildDate}" >> $version_info
+echo "}" >> $version_info
+
 #Copy stuff to dist directory
 cp -R "${sparrowDir}/dist/*" "${tempDir}/static"
 cp -R "${scriptDir}/install.sh" "${tempDir}"
 cp "${GOPATH}/bin/sparrow" ${tempDir}
 
 #Create VERSION file and copy it to temp dir
-${makeSelfExe} ${tempDir} ${distName} "Sparrow!" "install.sh"
+${makeSelfExe} --gzip --keep-umask \
+    ${tempDir} ${distName} "Sparrow!" ./install.sh || exit -5
 
 function cleanup() {
     rm -R $tempDir
