@@ -4,6 +4,9 @@
 #script is invoked. This script uses SSH and SCP. It needs SSH keys for the
 #remote machine to be copied to the key store of the user invoking this script
 
+remoteHost=${REMOTE_HOST:="localhost"}
+remoteUser=${REMOTE_USER:=$(whoami)}
+
 appName="sparrow"
 distName=${appName}_$(date +"%Y%m%d_%H%M%S").run
 workspacePath="/var/workspaces/sparrow/dist"
@@ -17,6 +20,6 @@ scriptDir=$(dirname "$scriptName")
 "${scriptDir}/build.sh" "${workspacePath}/build" "${distPath}" || exit 5
 
 #ssh -tt
-ssh "${remoteUser}@${remoteHost}" mkdir -p "/home/${remoteUser}/temp"
-scp "${distPath}" "${remoteUser}@${remoteHost}:/home/${remoteUser}/temp"
-ssh "${remoteUser}@${remoteHost}" "/home/${remoteUser}/temp/${distName}"
+# ssh "${remoteUser}@${remoteHost}" mkdir -p "/temp"
+scp "${distPath}" "${remoteUser}@${remoteHost}:/temp"
+ssh "${remoteUser}@${remoteHost}" "/temp/${distName}"
