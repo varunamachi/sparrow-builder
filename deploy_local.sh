@@ -3,8 +3,8 @@
 
 appName="sparrow"
 distName=${appName}_$(date +"%Y%m%d_%H%M%S").run
-workspacePath="/var/workspaces/sparrow/dist"
-distPath="${workspacePath}/${distName}"
+workspacePath="/var/workspaces"
+distPath="${workspacePath}/dist/${distName}"
 
 scriptName=$(readlink -f "$0")
 scriptDir=$(dirname "$scriptName")
