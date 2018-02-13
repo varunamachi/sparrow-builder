@@ -31,7 +31,7 @@ distPath="$2"
 echo "Dist path: ${distPath}"
 
 #Name of the installer that is going to be generated
-# distName="$3"
+distName="$3"
 
 createDir "${rootPath}"
 recreateDir "${distPath}"
@@ -132,7 +132,7 @@ cp "${scriptDir}/run.sh"        "${tempDir}"        || exit -5
 echo "Makeself: ${tempDir} --> ${distPath}"
 "${makeSelfExe}" --gzip --keep-umask \
     "${tempDir}"  \
-    "${distPath}" \
+    "${distPath}/${distName}" \
     "Sparrow!"    \
     "./install.sh"              || exit -5
 
