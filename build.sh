@@ -90,7 +90,7 @@ echo "Done!"
 
 
 #create a temporary directory for building the installer
-tempDir=$(mktemp -d -t "sparrow_xxxxxxxx") || exit -4
+tempDir=$(mktemp -d -t "sparrow_XXXXXX") || exit -4
 mkdir "${tempDir}/static"
 echo "Created temp dir: ${tempDir}"
 
@@ -101,7 +101,7 @@ npmVersion=$(npm --version)
 cd "$sparrowDir"
 hashSparrow=$(git log --format=%H -n 1)
 cd "$vaaliDir"
-hashVaali=$(git log --format=%M -n 1)
+hashVaali=$(git log --format=%H -n 1)
 cd "${rootPath}"
 
 version_info="${tempDir}/version.json"
@@ -120,13 +120,13 @@ echo "Version file: "
 cat "${version_info}"
 #Copy stuff to dist directory
 echo "Copying static files ${sparrowDir}/dist/*"
-cp -R "${sparrowDir}/dist/*"    "${tempDir}/static" || exit -5
+cp -R "${sparrowDir}/dist/."    "${tempDir}/static/" || exit -5
 echo "Copying ${scriptDir}/install.sh"
-cp "${scriptDir}/install.sh"    "${tempDir}"	    || exit -5
+cp "${scriptDir}/install.sh"    "${tempDir}"	     || exit -5
 echo "Copying ${GOPATH}/bin/vaali"
-cp "${GOPATH}/bin/vaali"        "${tempDir}"        || exit -5
+cp "${GOPATH}/bin/vaali"        "${tempDir}"         || exit -5
 echo "Copying ${scriptDir}/run.sh"
-cp "${scriptDir}/run.sh"        "${tempDir}"        || exit -5
+cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"

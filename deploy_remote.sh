@@ -9,17 +9,17 @@ remoteUser=${REMOTE_USER:=$(whoami)}
 
 appName="sparrow"
 distName=${appName}_$(date +"%Y%m%d_%H%M%S").run
-workspacePath="/var/workspaces/sparrow/dist"
-distPath="${workspacePath}/${distName}"
-remoteDir
+workspacePath="/var/workspaces"
+distPath="${workspacePath}/dist"
+buildPath="${workspacePath}/build"
 
 scriptName=$(readlink -f "$0")
 scriptDir=$(dirname "$scriptName")
 
 #build - set dist path
-"${scriptDir}/build.sh" "${workspacePath}/build" "${distPath}" || exit 5
+"${scriptDir}/build.sh" "${buildPath}" "${distPath}" "${distName}" || exit 5
 
 #ssh -tt
 # ssh "${remoteUser}@${remoteHost}" mkdir -p "/temp"
-scp "${distPath}" "${remoteUser}@${remoteHost}:/temp"
-ssh "${remoteUser}@${remoteHost}" "/temp/${distName}"
+scp "${distPath}/${distName}" "${remoteUser}@${remoteHost}:/tmp"
+ssh "${remoteUser}@${remoteHost}" "/tmp/${distName}"

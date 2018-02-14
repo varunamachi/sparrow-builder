@@ -4,7 +4,7 @@
 #This script will invoke the sparrow server
 
 serverExe="vaali"
-deploymentDir="/usr/lib/nginx/site-enabled/grinningyeti.com/"
+deploymentDir="/usr/share/nginx/grinningyeti.com/"
 
 if [ ! -d ${deploymentDir} ] ; then
     mkdir -p ${deploymentDir}
