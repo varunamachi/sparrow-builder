@@ -146,7 +146,7 @@ cp "${scriptDir}/install.sh"    "${tempDir}"	    || exit -5
 echo "Copying ${GOPATH}/bin/${srvCmdName}"
 cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
 echo "Copying ${scriptDir}/run.sh"
-cp "${scriptDir}/run.sh"        "${tempDir}"        || exit -5
+cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"
