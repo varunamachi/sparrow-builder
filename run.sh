@@ -1,15 +1,17 @@
 #!/bin/bash
 
-serverExe="vaali"
-scriptName=$(readlink -f "$0")
-deploymentDir=$(dirname "$scriptName")
+serverExe="${1}"
+deploymentDir=${2}
+logFilePrefix="${deploymentDir}/logs/${serverExe}"
+
+cat  << EOF
+
 
 echo "Checking log dir"
 if [ ! -d "${deploymentDir}/logs" ]; then
     mkdir "${deploymentDir}/logs"
 fi
 
-logFilePrefix="${deploymentDir}/logs/${serverExe}"
 if [ ! -f "${logFilePrefix}.log" ] ; then
     datePrefix=$(date +"%d/%m/%Y %H:%M:%S")
     mv "${logFilePrefix}.log" "${logFilePrefix}_${datePrefix}.log"
@@ -27,3 +29,5 @@ if [ $? -eq 1 ] ; then
 else
     echo "Failed to start ${serverExe}"
 fi
+
+EOF

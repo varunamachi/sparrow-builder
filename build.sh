@@ -44,6 +44,8 @@ wcRepo="${WEB_CLIENT_REPO}"
 
 wcProjectDir="${WEB_CLIENT_PROJECT_DIR}"
 
+deploymentDir=${DEPLOYMENT_DIR}
+
 #git repo of server project
 gitRepo="https://${srvSrcGoPath}"
 srvProjectDir="${GOPATH}/${srvSrcGoPath}"
@@ -58,6 +60,7 @@ echo "Server Command Abs Path: ${srvCmdDir}"
 echo "Web Client Name: ${wcName}"
 echo "Web Client Repo: ${wcRepo}"
 echo "Web Client Project Dir: ${wcProjectDir}"
+echo "Deployment Directory: ${DEPLOYMENT_DIR}"
 
 
 createDir "${rootPath}"
@@ -138,15 +141,25 @@ touch "${version_info}"
 } >> "${version_info}"
 echo "Version file: "
 cat "${version_info}"
+
 #Copy stuff to dist directory
 echo "Copying static files ${wcProjectDir}/dist/*"
 cp -R "${wcProjectDir}/dist/*"   "${tempDir}/static" || exit -5
-echo "Copying ${scriptDir}/install.sh"
-cp "${scriptDir}/install.sh"    "${tempDir}"	    || exit -5
 echo "Copying ${GOPATH}/bin/${srvCmdName}"
 cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
-echo "Copying ${scriptDir}/run.sh"
-cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
+
+# echo "Copying ${scriptDir}/install.sh"
+# cp "${scriptDir}/install.sh"    "${tempDir}"	    || exit -5
+# echo "Copying ${scriptDir}/run.sh"
+# cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
+echo "Generating ${scriptDir}/install.sh"
+"${scriptDir}/install.sh" "${srvCmdName}" "${deploymentDir}" \
+    "${tempDir}/install.sh"   || exit -5
+
+echo "Generating ${scriptDir}/run.sh"
+cp "${scriptDir}/run.sh" "${srvCmdName}" "${deploymentDir}" \
+    "${tempDir}/run.sh"   || exit -5
+
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"
