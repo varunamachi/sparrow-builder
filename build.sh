@@ -152,12 +152,12 @@ cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
 # cp "${scriptDir}/install.sh"    "${tempDir}"	    || exit -5
 # echo "Copying ${scriptDir}/run.sh"
 # cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
-echo "Generating ${scriptDir}/install.sh"
-"${scriptDir}/install.sh" "${srvCmdName}" "${deploymentDir}" \
+echo "Generating ${tempDir}/install.sh"
+"${scriptDir}/gen_install.sh" "${srvCmdName}" "${deploymentDir}" \
     "${tempDir}/install.sh"   || exit -5
 
-echo "Generating ${scriptDir}/run.sh"
-cp "${scriptDir}/run.sh" "${srvCmdName}" "${deploymentDir}" \
+echo "Generating ${tempDir}/run.sh"
+cp "${scriptDir}/gen_run.sh" "${srvCmdName}" "${deploymentDir}" \
     "${tempDir}/run.sh"   || exit -5
 
 
