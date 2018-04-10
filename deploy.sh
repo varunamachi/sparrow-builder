@@ -6,4 +6,4 @@
 remoteHost=${REMOTE_HOST:="localhost"}
 remoteUser=${REMOTE_USER:=$(whoami)}
 scp "${DIST_PATH}/${DIST_NAME}" "${remoteUser}@${remoteHost}:/tmp"
-ssh "${remoteUser}@${remoteHost}" "/tmp/${DIST_NAME}"
+ssh "${remoteUser}@${remoteHost}" "/tmp/$DIST_NAME"

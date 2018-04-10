@@ -3,6 +3,7 @@
 serverExe="${1}"
 deploymentDir=${2}
 logFilePrefix="${deploymentDir}/logs/${serverExe}"
+datePrefix=$(date +"%d/%m/%Y %H:%M:%S")
 
 cat  << EOF
 
@@ -13,7 +14,6 @@ if [ ! -d "${deploymentDir}/logs" ]; then
 fi
 
 if [ ! -f "${logFilePrefix}.log" ] ; then
-    datePrefix=$(date +"%d/%m/%Y %H:%M:%S")
     mv "${logFilePrefix}.log" "${logFilePrefix}_${datePrefix}.log"
 fi
 touch "${logFilePrefix}.log"

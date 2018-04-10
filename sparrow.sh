@@ -1,5 +1,9 @@
 #!/bin/bash
 
+REMOTE_USER="$1"
+REMOTE_HOST="$2"
+NGINX_SITE_NAME="$3"
+
 WORKSPACE_PATH="/var/workspaces"
 ROOT_PATH="${WORKSPACE_PATH}/build"
 DIST_PATH="${WORKSPACE_PATH}/dist"
@@ -9,9 +13,9 @@ SRV_SRC_GO_PATH="github.com/varunamachi/sprw"
 WEB_CLIENT_NAME="sparrow"
 WEB_CLIENT_REPO="github.com/varunamachi/sparrow"
 WEB_CLIENT_PROJECT_DIR="${WORKSPACE_PATH}"
-DEPLOYMENT_DIR=""
-REMOTE_USER="$1"
-REMOTE_HOST="$2"
+DEPLOYMENT_DIR="/usr/share/nginx/${NGINX_SITE_NAME}/"
+
+
 
 export WORKSPACE_PATH
 export ROOT_PATH
