@@ -33,10 +33,3 @@ chmod 755 "${deploymentDir}/run.sh"
 "${deploymentDir}/run.sh"
 
 EOF
-
-
-
-
-
-
-
