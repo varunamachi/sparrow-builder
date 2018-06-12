@@ -48,8 +48,8 @@ deploymentDir=${DEPLOYMENT_DIR}
 
 #git repo of server project
 gitRepo="https://${srvSrcGoPath}"
-srvProjectDir="${GOPATH}/${srvSrcGoPath}"
-srvCmdDir="/cmd/${srvCmdName}"
+srvProjectDir="${GOPATH}/src/${srvSrcGoPath}"
+srvCmdDir="${srvProjectDir}/cmd/${srvCmdName}"
 
 
 echo "Build root: ${rootPath}"
@@ -103,7 +103,7 @@ go install || exit -2
 
 #get web client source code
 echo "Clone ${wcName} to ${wcProjectDir}..."
-getLatestCode "${wcRepo}" "${wcProjectDir}" || exit -1
+getLatestCode "https://${wcRepo}" "${wcProjectDir}" || exit -1
 echo "Done!, Entering ${wcName}, Installing dependencies..."
 cd "${wcProjectDir}" || exit -3
 npm install || exit -3
