@@ -24,7 +24,7 @@ sleep 5s
 #Check if server has started
 netstat -ntpl | grep "[0-9]*:${1:-8000}"
 
-if ! lsof -i:8000
+if lsof -i:8000
 then
     echo "${serverExe} started, processID: " 
     ps cax | grep "${serverExe}" | grep -o '^[ ]*[0-9]*'
