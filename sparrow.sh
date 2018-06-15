@@ -12,8 +12,8 @@ SRV_CMD_NAME="sprw"
 SRV_SRC_GO_PATH="github.com/varunamachi/sprw"
 WEB_CLIENT_NAME="sparrow"
 WEB_CLIENT_REPO="github.com/varunamachi/sparrow"
-WEB_CLIENT_PROJECT_DIR="${WORKSPACE_PATH}"
-DEPLOYMENT_DIR="/usr/share/nginx/${NGINX_SITE_NAME}/"
+WEB_CLIENT_PROJECT_DIR="${WORKSPACE_PATH}/webclient"
+DEPLOYMENT_DIR="/usr/share/nginx/${NGINX_SITE_NAME}"
 
 
 

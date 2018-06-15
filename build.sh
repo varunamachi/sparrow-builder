@@ -63,6 +63,16 @@ echo "Web Client Project Dir: ${wcProjectDir}"
 echo "Deployment Directory: ${DEPLOYMENT_DIR}"
 
 
+tempDir=$(mktemp -d -t "${wcName}_XXXXXXXX") || exit -4
+echo "Temp Dir: ${tempDir}"
+cleanup() {
+    echo "Cleaning up temp dir"
+    rm -R "${tempDir}"
+}
+trap cleanup EXIT
+
+
+
 createDir "${rootPath}"
 recreateDir "${distPath}"
 echo "Recreated dist at: ${distPath}"
@@ -113,7 +123,6 @@ echo "Done!"
 
 
 #create a temporary directory for building the installer
-tempDir=$(mktemp -d -t "${wcName}_xxxxxxxx") || exit -4
 mkdir "${tempDir}/static"
 echo "Created temp dir: ${tempDir}"
 
@@ -131,12 +140,12 @@ version_info="${tempDir}/version.json"
 touch "${version_info}"
 {
     echo "{"                                 
-    echo "    nodeVersion: ${nodeVersion},"  
-    echo "    npmVersion: ${npmVersion},"    
-    echo "    goVersion: ${goVersion},"      
-    echo "    ${wcName}Commit: ${hashWC},"
-    echo "    ${srvCmdName}Commit: ${hashSrv},"    
-    echo "    builtAt: ${buildDate}"         
+    echo "    nodeVersion: \"${nodeVersion}\","  
+    echo "    npmVersion: \"${npmVersion}\","    
+    echo "    goVersion: \"${goVersion}\","      
+    echo "    ${wcName}Commit: \"${hashWC}\","
+    echo "    ${srvCmdName}Commit: \"${hashSrv}\","    
+    echo "    builtAt: \"${buildDate}\""         
     echo "}"                                 
 } >> "${version_info}"
 echo "Version file: "
@@ -144,7 +153,7 @@ cat "${version_info}"
 
 #Copy stuff to dist directory
 echo "Copying static files ${wcProjectDir}/dist/*"
-cp -R "${wcProjectDir}/dist/*"   "${tempDir}/static" || exit -5
+cp -r "${wcProjectDir}/dist/"*   "${tempDir}/static/" || exit -5
 echo "Copying ${GOPATH}/bin/${srvCmdName}"
 cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
 
@@ -154,12 +163,13 @@ cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
 # cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
 echo "Generating ${tempDir}/install.sh"
 "${scriptDir}/gen_install.sh" "${srvCmdName}" "${deploymentDir}" \
-    "${tempDir}/install.sh"   || exit -5
+    | tee "${tempDir}/install.sh"   || exit -5
+chmod +x "${tempDir}/install.sh"
 
 echo "Generating ${tempDir}/run.sh"
-cp "${scriptDir}/gen_run.sh" "${srvCmdName}" "${deploymentDir}" \
-    "${tempDir}/run.sh"   || exit -5
-
+"${scriptDir}/gen_run.sh" "${srvCmdName}" "${deploymentDir}" \
+    | tee "${tempDir}/run.sh"   || exit -5
+chmod +x "${tempDir}/run.sh"
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"
@@ -168,13 +178,6 @@ echo "Makeself: ${tempDir} --> ${distPath}"
     "${distPath}/${distName}" \
     "${wcName}!"    \
     "./install.sh"              || exit -5
-
-function cleanup() {
-    echo "Cleaning up temp dir"
-    rm -R "${tempDir}"
-}
-
-trap cleanup EXIT
 
 
 
