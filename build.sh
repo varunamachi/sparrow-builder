@@ -22,6 +22,15 @@ function recreateDir() {
     mkdir -p "$1"
 }
 
+function check() {
+    if [ -z "${2}" ]; then 
+        echo "Variable $1 not set... Exiting...."
+        exit 10
+    else 
+        printf "%50s: %s\n" "$1" "$2"
+    fi
+}
+
 #Path where code and required tools will be checked out. ex: /var/workspaces
 rootPath="${ROOT_PATH}"
 
@@ -44,27 +53,33 @@ wcRepo="${WEB_CLIENT_REPO}"
 
 wcProjectDir="${WEB_CLIENT_PROJECT_DIR}"
 
-deploymentDir=${DEPLOYMENT_DIR}
+deploymentDir="${DEPLOYMENT_DIR}"
+
+serverPort="${SERVER_PORT}"
+
+tempDir=$(mktemp -d -t "${wcName}_XXXXXXXX") || exit -4
+
+
 
 #git repo of server project
 gitRepo="https://${srvSrcGoPath}"
 srvProjectDir="${GOPATH}/src/${srvSrcGoPath}"
 srvCmdDir="${srvProjectDir}/cmd/${srvCmdName}"
 
+echo "=== BUILD ===> "
+check "Build root" "${rootPath}"
+check "Dist path" "${distPath}"
+check "Server Command Name" "${srvCmdName}"
+check "Git Repo"  "${gitRepo}"
+check "Server Command Abs Path" "${srvCmdDir}"
+check "Web Client Name" "${wcName}"
+check "Web Client Repo" "${wcRepo}"
+check "Web Client Project Dir" "${wcProjectDir}"
+check "Deployment Directory" "${DEPLOYMENT_DIR}"
+check "Temp Dir" "${tempDir}"
+check "Server Port" "${serverPort}"
+echo "<=== /BUILD === "
 
-echo "Build root: ${rootPath}"
-echo "Dist path: ${distPath}"
-echo "Server Command Name: ${srvCmdName}"
-echo "Git Repo:  ${gitRepo}"
-echo "Server Command Abs Path: ${srvCmdDir}"
-echo "Web Client Name: ${wcName}"
-echo "Web Client Repo: ${wcRepo}"
-echo "Web Client Project Dir: ${wcProjectDir}"
-echo "Deployment Directory: ${DEPLOYMENT_DIR}"
-
-
-tempDir=$(mktemp -d -t "${wcName}_XXXXXXXX") || exit -4
-echo "Temp Dir: ${tempDir}"
 cleanup() {
     echo "Cleaning up temp dir"
     rm -R "${tempDir}"
@@ -116,7 +131,7 @@ echo "Clone ${wcName} to ${wcProjectDir}..."
 getLatestCode "https://${wcRepo}" "${wcProjectDir}" || exit -1
 echo "Done!, Entering ${wcName}, Installing dependencies..."
 cd "${wcProjectDir}" || exit -3
-npm install || exit -3
+npm install > /dev/null || exit -3
 echo "Performing build..."
 npm run build || exit -3
 echo "Done!"
@@ -133,7 +148,7 @@ npmVersion=$(npm --version)
 cd "${wcProjectDir}"
 hashWC=$(git log --format=%H -n 1)
 cd "${srvProjectDir}"
-hashSrv=$(git log --format=%M -n 1)
+hashSrv=$(git log --format=%H -n 1)
 cd "${rootPath}"
 
 version_info="${tempDir}/version.json"
@@ -163,13 +178,17 @@ cp "${GOPATH}/bin/${srvCmdName}" "${tempDir}"        || exit -5
 # cp "${scriptDir}/run.sh"        "${tempDir}"         || exit -5
 echo "Generating ${tempDir}/install.sh"
 "${scriptDir}/gen_install.sh" "${srvCmdName}" "${deploymentDir}" \
-    | tee "${tempDir}/install.sh"   || exit -5
+    > "${tempDir}/install.sh"   || exit -5
 chmod +x "${tempDir}/install.sh"
 
 echo "Generating ${tempDir}/run.sh"
-"${scriptDir}/gen_run.sh" "${srvCmdName}" "${deploymentDir}" \
-    | tee "${tempDir}/run.sh"   || exit -5
+"${scriptDir}/gen_run.sh" "${srvCmdName}" "${deploymentDir}" "${serverPort}"\
+    > "${tempDir}/run.sh"   || exit -5
 chmod +x "${tempDir}/run.sh"
+
+echo "\n######"
+cat "${tempDir}/run.sh"
+echo "######\n"
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"

@@ -2,8 +2,9 @@
 
 serverExe="${1}"
 deploymentDir=${2}
+port=${3}
 logFilePrefix="${deploymentDir}/logs/${serverExe}"
-datePrefix=$(date +"%d/%m/%Y %H:%M:%S")
+datePrefix=$(date +"%Y.%m.%d_%H.%M.%S")
 
 cat  << EOF
 
@@ -18,7 +19,7 @@ if [ -f "${logFilePrefix}.log" ] ; then
 fi
 touch "${logFilePrefix}.log"
 
-nohup "./${serverExe}" serve > "${logFilePrefix}.log" 2>&1 &
+nohup "./${serverExe}" serve --port ${port} > "${logFilePrefix}.log" 2>&1 &
 sleep 5s
 
 #Check if server has started

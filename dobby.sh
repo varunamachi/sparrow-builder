@@ -1,13 +1,3 @@
-#!/bin/bash
-
-# function check() {
-#     if [ -z "${2}" ]; then 
-#         echo "Variable $1 not set... Exiting...."
-#         exit 10
-#     else 
-#         printf "%50s: %s\n" "$1" "$2"
-#     fi
-# }
 
 if [ $# -lt 3 ] ; then 
     echo "Insufficient arguments... Requires: "
@@ -22,17 +12,27 @@ REMOTE_USER="$2"
 NGINX_SITE_NAME="$3"
 
 
+#Go project repo that uses DEP
+SRV_SRC_GO_PATH="github.com/swathiGiligar/dobbyS"
+
+#Web client repo that uses npm and npm build
+WEB_CLIENT_REPO="github.com/swathiGiligar/dobby"
+
+#Name of the server binary
+SRV_CMD_NAME="dobby"
+
+#Name of the web client directory
+WEB_CLIENT_NAME="dobby"
+
+#Port at which server runs
+SERVER_PORT="9000"
+
 WORKSPACE_PATH="/var/workspaces"
 ROOT_PATH="${WORKSPACE_PATH}/build"
 DIST_PATH="${WORKSPACE_PATH}/dist"
 DIST_NAME=${WEB_CLIENT_NAME}_$(date +"%Y%m%d_%H%M%S").run
-SRV_CMD_NAME="sprw"
-SRV_SRC_GO_PATH="github.com/varunamachi/sprw"
-WEB_CLIENT_NAME="sparrow"
-WEB_CLIENT_REPO="github.com/varunamachi/sparrow"
 WEB_CLIENT_PROJECT_DIR="${WORKSPACE_PATH}/webclient"
 DEPLOYMENT_DIR="/usr/share/nginx/${NGINX_SITE_NAME}"
-SERVER_PORT="8000"
 
 
 
