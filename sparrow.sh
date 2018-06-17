@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# function check() {
-#     if [ -z "${2}" ]; then 
-#         echo "Variable $1 not set... Exiting...."
-#         exit 10
-#     else 
-#         printf "%50s: %s\n" "$1" "$2"
-#     fi
-# }
-
 if [ $# -lt 3 ] ; then 
     echo "Insufficient arguments... Requires: "
     echo "  1. Remote Host - remote host where app has to be deployed"
