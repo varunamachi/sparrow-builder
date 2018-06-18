@@ -51,7 +51,7 @@ wcName="${WEB_CLIENT_NAME}"
 
 wcRepo="${WEB_CLIENT_REPO}"
 
-wcProjectDir="${WEB_CLIENT_PROJECT_DIR}"
+wcProjectDir="${WEB_CLIENT_PROJECT_DIR}/${wcName}"
 
 deploymentDir="${DEPLOYMENT_DIR}"
 
