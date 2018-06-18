@@ -15,6 +15,8 @@ fi
 
 cat  << EOF
 
+#!/bin/bash
+
 if [ \$# -lt 3 ] ; then 
     echo "Insufficient arguments... Requires: "
     echo "  1. Remote Host - remote host where app has to be deployed"
