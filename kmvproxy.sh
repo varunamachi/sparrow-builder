@@ -18,6 +18,7 @@ ROOT_PATH="${WORKSPACE_PATH}/build"
 DIST_PATH="${WORKSPACE_PATH}/dist"
 DIST_NAME=${WEB_CLIENT_NAME}_$(date +"%Y%m%d_%H%M%S").run
 SRV_CMD_NAME="kmvproxy"
+SERVER_REPO="git@gitlab.com:thebetelnuts/kmvproxy.git"
 SRV_SRC_GO_PATH="gitlab.com/thebetelnuts/kmvproxy"
 WEB_CLIENT_NAME="sparrow"
 WEB_CLIENT_REPO="github.com/varunamachi/sparrow"
@@ -32,6 +33,7 @@ export ROOT_PATH
 export DIST_PATH
 export DIST_NAME
 export SRV_CMD_NAME
+export SERVER_REPO
 export SRV_SRC_GO_PATH
 export WEB_CLIENT_NAME
 export WEB_CLIENT_REPO

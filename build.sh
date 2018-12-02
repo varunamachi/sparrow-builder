@@ -4,7 +4,7 @@ function getLatestCode() {
     if [ ! -d "${2}/.git" ] ; then
 	git clone "${1}" "${2}"
     else 
-	cd "${2}"
+	cd "${2}" || exit -1
 	git pull
     fi
 }
@@ -31,6 +31,8 @@ function check() {
     fi
 }
 
+export GOPATH="${WORKSPACE_PATH}/go"
+
 #Path where code and required tools will be checked out. ex: /var/workspaces
 rootPath="${ROOT_PATH}"
 
@@ -47,6 +49,8 @@ srvCmdName="${SRV_CMD_NAME}"
 #Source directory of server peoject ex: github.com/varunamachi/vaali
 srvSrcGoPath="${SRV_SRC_GO_PATH}"
 
+gitRepo="${SERVER_REPO}"
+
 wcName="${WEB_CLIENT_NAME}"
 
 wcRepo="${WEB_CLIENT_REPO}"
@@ -62,7 +66,8 @@ tempDir=$(mktemp -d -t "${wcName}_XXXXXXXX") || exit -4
 
 
 #git repo of server project
-gitRepo="https://${srvSrcGoPath}"
+# gitRepo="https://${srvSrcGoPath}"
+
 srvProjectDir="${GOPATH}/src/${srvSrcGoPath}"
 srvCmdDir="${srvProjectDir}/cmd/${srvCmdName}"
 
@@ -92,7 +97,7 @@ createDir "${rootPath}"
 recreateDir "${distPath}"
 echo "Recreated dist at: ${distPath}"
 
-cd "${rootPath}"
+cd "${rootPath}" || exit -1
 echo "Moved to ${rootPath}"
 
 #get or update dep
@@ -101,7 +106,7 @@ go get -u github.com/golang/dep/cmd/dep || exit -1
 
 #get make self
 if [ ! -d makeself ]; then
-    git clone https://github.com/megastep/makeself.git
+    git clone "https://github.com/megastep/makeself.git"
     echo "Cloned makeself at $(pwd)"
 fi
 
@@ -128,7 +133,7 @@ go install || exit -2
 
 #get web client source code
 echo "Clone ${wcName} to ${wcProjectDir}..."
-getLatestCode "https://${wcRepo}" "${wcProjectDir}" || exit -1
+getLatestCode "${wcRepo}" "${wcProjectDir}" || exit -1
 echo "Done!, Entering ${wcName}, Installing dependencies..."
 cd "${wcProjectDir}" || exit -3
 npm install > /dev/null || exit -3
@@ -145,11 +150,11 @@ buildDate=$(date +"%d/%m/%Y %H:%M:%S")
 goVersion=$(go version)
 nodeVersion=$(node --version)
 npmVersion=$(npm --version)
-cd "${wcProjectDir}"
+cd "${wcProjectDir}" || exit -1
 hashWC=$(git log --format=%H -n 1)
-cd "${srvProjectDir}"
+cd "${srvProjectDir}" || exit -1
 hashSrv=$(git log --format=%H -n 1)
-cd "${rootPath}"
+cd "${rootPath}" || exit -1
 
 version_info="${tempDir}/version.json"
 touch "${version_info}"
@@ -186,9 +191,9 @@ echo "Generating ${tempDir}/run.sh"
     > "${tempDir}/run.sh"   || exit -5
 chmod +x "${tempDir}/run.sh"
 
-echo "\n######"
+printf "\n######"
 cat "${tempDir}/run.sh"
-echo "######\n"
+printf "######\n"
 
 #Create VERSION file and copy it to temp dir
 echo "Makeself: ${tempDir} --> ${distPath}"

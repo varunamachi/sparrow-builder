@@ -14,11 +14,13 @@ REMOTE_USER="$2"
 NGINX_SITE_NAME="$3"
 
 
+SERVER_REPO="https://github.com/swathiGiligar/dobbyS"
+
 #Go project repo that uses DEP
 SRV_SRC_GO_PATH="github.com/swathiGiligar/dobbyS"
 
 #Web client repo that uses npm and npm build
-WEB_CLIENT_REPO="github.com/swathiGiligar/dobby"
+WEB_CLIENT_REPO="https://github.com/swathiGiligar/dobby"
 
 #Name of the server binary
 SRV_CMD_NAME="dobby"
@@ -42,6 +44,7 @@ export WORKSPACE_PATH
 export ROOT_PATH
 export DIST_PATH
 export DIST_NAME
+export SERVER_REPO
 export SRV_CMD_NAME
 export SRV_SRC_GO_PATH
 export WEB_CLIENT_NAME
