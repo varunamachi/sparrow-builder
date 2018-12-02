@@ -3,11 +3,12 @@
 
 if [ $# -lt 5 ] ; then 
     echo "Insufficient arguments... Requires: "
-    echo "  1. Golang server repo- Go project repo that uses DEP"
-    echo "  2. Web client repo - Web client repo that uses npm"
-    echo "  3. Server name - Name of the server binary"
-    echo "  4. Web client name - Name of the web client project"
-    echo "  5. Server port - Port with which server runs"
+    echo "  1. Git repo URL for the Go server project (SSH or HTTP)"
+    echo "  2. Golang server repo URL - for Go project structure"
+    echo "  3. Web client repo - Web client repo that uses npm"
+    echo "  4. Server name - Name of the server binary"
+    echo "  5. Web client name - Name of the web client project"
+    echo "  6. Server port - Port with which server runs"
     exit 1
 fi
 
@@ -29,21 +30,23 @@ REMOTE_HOST="\$1"
 REMOTE_USER="\$2"
 NGINX_SITE_NAME="\$3"
 
+#Git repo URL SSH or HTTP
+SERVER_REPO="${1}"
 
 #Go project repo that uses DEP
-SRV_SRC_GO_PATH="${1}"
+SRV_SRC_GO_PATH="${2}"
 
 #Web client repo that uses npm and npm build
-WEB_CLIENT_REPO="${2}"
+WEB_CLIENT_REPO="${3}"
 
 #Name of the server binary
-SRV_CMD_NAME="${3}"
+SRV_CMD_NAME="${4}"
 
 #Name of the web client directory
-WEB_CLIENT_NAME="${4}"
+WEB_CLIENT_NAME="${5}"
 
 #Port at which server runs
-SERVER_PORT="${5}"
+SERVER_PORT="${6}"
 
 WORKSPACE_PATH="/var/workspaces"
 ROOT_PATH="\${WORKSPACE_PATH}/build"
