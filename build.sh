@@ -118,6 +118,9 @@ scriptDir=$(dirname "$scriptName")
 
 #get server source code - if spw is retrieved the dep should get this
 echo "Cloning ${srvCmdName} to ${srvProjectDir}..."
+if [ -f "${srvProjectDir}/Gopkg.lock" ]; then
+    git checkout "${srvProjectDir}/Gopkg.lock"
+fi
 getLatestCode "${gitRepo}" "${srvProjectDir}" || exit -1
 echo "Done!"
 
